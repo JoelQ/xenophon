@@ -1,4 +1,5 @@
 module Main where
+import System.IO
 
 responseFor :: [String] -> String
 responseFor ("Action":_) = "call 0"
@@ -14,4 +15,6 @@ processInput :: String -> String
 processInput x = unlines . noEmptyResponses $ map processCommand $ lines x
 
 main :: IO ()
-main = interact processInput
+main = do
+  hSetBuffering stdout NoBuffering
+  interact processInput
