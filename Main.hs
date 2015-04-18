@@ -1,20 +1,15 @@
 module Main where
 import System.IO
+import Data.Maybe
 
-responseFor :: [String] -> String
-responseFor ("Action":_) = "call 0"
-responseFor _ = ""
+responseFor :: [String] -> Maybe String
+responseFor ("Action":_) = Just "call 0"
+responseFor _ = Nothing
 
-processCommand :: String -> String
-processCommand x = responseFor $ words x
-
-noEmptyResponses :: [String] -> [String]
-noEmptyResponses = filter (not . null)
-
-processInput :: String -> String
-processInput x = unlines . noEmptyResponses $ map processCommand $ lines x
+processCommand :: String -> Maybe String
+processCommand = responseFor . words
 
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
-  interact processInput
+  interact $ unlines . (mapMaybe processCommand . lines)
